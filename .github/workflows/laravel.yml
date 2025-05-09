@@ -1,0 +1,35 @@
+姓名: 名称:Laravel: Laravel: Laravel
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  laravel-tests:
+
+    runs-on:     runs-on: ubuntu-latest
+
+    steps:
+    - uses:     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.0'
+    - uses:     - uses: actions/checkout@v4
+    - name:     - name: Copy .env
+      run:       run: php -r "file_exists('.env') || copy('.env.example', '.env');""file_exists('.env') || copy('.env.example', '.env');"
+    - name:     - name: Install Dependencies
+      run:       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name:     - name: Generate key
+      run:       run: php artisan key:generate:generate
+    - name:     - name: Directory Permissions
+      run:       run: chmod -R 777 storage bootstrap/cache
+    - name:     - name: Create Database
+      run: |
+        mkdir -p database
+        touch database/database.sqlite
+    - name:     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
+      env:
+        DB_CONNECTION:         DB_CONNECTION: sqlite
+        DB_DATABASE:         DB_DATABASE: database/database.sqlite
+      run:       run:       run: 运行:php artisan 测试
